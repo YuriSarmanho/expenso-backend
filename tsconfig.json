@@ -1,11 +1,10 @@
 {
   "compilerOptions": {
-    "module": "preserve",
-    "moduleResolution": "bundler",
-    "resolvePackageJsonExports": true,
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
     "esModuleInterop": true,
     "isolatedModules": true,
-    "declaration": true,
+    "declaration": false,
     "removeComments": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
@@ -16,11 +15,12 @@
     "incremental": true,
     "skipLibCheck": true,
     "strict": true,
+    "strictNullChecks": true,
     "strictPropertyInitialization": false,
+    "resolveJsonModule": true,
     "types": [
       "vitest/globals",
       "node"
-    ],
-    "resolveJsonModule": true
+    ]
   }
 }
