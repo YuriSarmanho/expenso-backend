@@ -4,8 +4,8 @@
   "target": "postgres",
   "profileHash": "3916f444a8a17ad749191acf9e08dad97d1a327b88c2f1d45d12f240296aa8b2",
   "roots": {
-    "Post": {
-      "model": "Post",
+    "Transaction": {
+      "model": "Transaction",
       "namespace": "public"
     },
     "User": {
@@ -17,12 +17,19 @@
     "namespaces": {
       "public": {
         "models": {
-          "Post": {
+          "Transaction": {
             "fields": {
               "authorId": {
                 "nullable": false,
                 "type": {
                   "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
+              "category": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
                   "kind": "scalar"
                 }
               },
@@ -36,7 +43,7 @@
               "createdAt": {
                 "nullable": false,
                 "type": {
-                  "codecId": "pg/timestamptz-string@1",
+                  "codecId": "pg/timestamptz-temporal@1",
                   "kind": "scalar"
                 }
               },
@@ -55,9 +62,9 @@
                 }
               },
               "updatedAt": {
-                "nullable": false,
+                "nullable": true,
                 "type": {
-                  "codecId": "pg/timestamptz-string@1",
+                  "codecId": "pg/timestamptz-temporal@1",
                   "kind": "scalar"
                 }
               }
@@ -85,11 +92,14 @@
                 "authorId": {
                   "column": "authorId"
                 },
+                "category": {
+                  "column": "category"
+                },
                 "content": {
                   "column": "content"
                 },
                 "createdAt": {
-                  "column": "createdAt"
+                  "column": "created_at"
                 },
                 "id": {
                   "column": "id"
@@ -98,19 +108,19 @@
                   "column": "title"
                 },
                 "updatedAt": {
-                  "column": "updatedAt"
+                  "column": "updated_at"
                 }
               },
               "namespaceId": "public",
-              "table": "Post"
+              "table": "Transaction"
             }
           },
           "User": {
             "fields": {
-              "createdAt": {
+              "balance": {
                 "nullable": false,
                 "type": {
-                  "codecId": "pg/timestamptz-string@1",
+                  "codecId": "pg/float8@1",
                   "kind": "scalar"
                 }
               },
@@ -129,21 +139,28 @@
                 }
               },
               "name": {
-                "nullable": true,
+                "nullable": false,
                 "type": {
                   "codecId": "pg/text@1",
                   "kind": "scalar"
                 }
               },
-              "updatedAt": {
+              "password": {
                 "nullable": false,
                 "type": {
-                  "codecId": "pg/timestamptz-string@1",
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "role": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
                   "kind": "scalar"
                 }
               },
               "username": {
-                "nullable": true,
+                "nullable": false,
                 "type": {
                   "codecId": "pg/text@1",
                   "kind": "scalar"
@@ -151,7 +168,7 @@
               }
             },
             "relations": {
-              "posts": {
+              "transactions": {
                 "cardinality": "1:N",
                 "on": {
                   "localFields": [
@@ -162,15 +179,15 @@
                   ]
                 },
                 "to": {
-                  "model": "Post",
+                  "model": "Transaction",
                   "namespace": "public"
                 }
               }
             },
             "storage": {
               "fields": {
-                "createdAt": {
-                  "column": "createdAt"
+                "balance": {
+                  "column": "balance"
                 },
                 "email": {
                   "column": "email"
@@ -181,8 +198,11 @@
                 "name": {
                   "column": "name"
                 },
-                "updatedAt": {
-                  "column": "updatedAt"
+                "password": {
+                  "column": "password"
+                },
+                "role": {
+                  "column": "role"
                 },
                 "username": {
                   "column": "username"
@@ -201,11 +221,16 @@
       "public": {
         "entries": {
           "table": {
-            "Post": {
+            "Transaction": {
               "columns": {
                 "authorId": {
                   "codecId": "pg/int4@1",
                   "dataType": "pg/int4",
+                  "nullable": false
+                },
+                "category": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
                   "nullable": false
                 },
                 "content": {
@@ -213,8 +238,8 @@
                   "dataType": "pg/text",
                   "nullable": true
                 },
-                "createdAt": {
-                  "codecId": "pg/timestamptz-string@1",
+                "created_at": {
+                  "codecId": "pg/timestamptz-temporal@1",
                   "dataType": "pg/timestamptz",
                   "default": {
                     "expression": "now()",
@@ -236,23 +261,23 @@
                   "dataType": "pg/text",
                   "nullable": false
                 },
-                "updatedAt": {
-                  "codecId": "pg/timestamptz-string@1",
+                "updated_at": {
+                  "codecId": "pg/timestamptz-temporal@1",
                   "dataType": "pg/timestamptz",
-                  "nullable": false
+                  "nullable": true
                 }
               },
               "foreignKeys": [
                 {
                   "index": {
-                    "name": "Post_authorId_idx_e47547ed"
+                    "name": "Transaction_authorId_idx_e47547ed"
                   },
                   "source": {
                     "columns": [
                       "authorId"
                     ],
                     "namespaceId": "public",
-                    "tableName": "Post"
+                    "tableName": "Transaction"
                   },
                   "target": {
                     "columns": [
@@ -268,8 +293,8 @@
                   "columns": [
                     "authorId"
                   ],
-                  "name": "Post_authorId_idx_e47547ed",
-                  "prefix": "Post_authorId_idx",
+                  "name": "Transaction_authorId_idx_e47547ed",
+                  "prefix": "Transaction_authorId_idx",
                   "unique": false
                 }
               ],
@@ -282,13 +307,9 @@
             },
             "User": {
               "columns": {
-                "createdAt": {
-                  "codecId": "pg/timestamptz-string@1",
-                  "dataType": "pg/timestamptz",
-                  "default": {
-                    "expression": "now()",
-                    "kind": "function"
-                  },
+                "balance": {
+                  "codecId": "pg/float8@1",
+                  "dataType": "pg/float8",
                   "nullable": false
                 },
                 "email": {
@@ -308,17 +329,22 @@
                 "name": {
                   "codecId": "pg/text@1",
                   "dataType": "pg/text",
-                  "nullable": true
+                  "nullable": false
                 },
-                "updatedAt": {
-                  "codecId": "pg/timestamptz-string@1",
-                  "dataType": "pg/timestamptz",
+                "password": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                },
+                "role": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
                   "nullable": false
                 },
                 "username": {
                   "codecId": "pg/text@1",
                   "dataType": "pg/text",
-                  "nullable": true
+                  "nullable": false
                 }
               },
               "foreignKeys": [],
@@ -333,6 +359,11 @@
                   "columns": [
                     "email"
                   ]
+                },
+                {
+                  "columns": [
+                    "username"
+                  ]
                 }
               ]
             }
@@ -342,39 +373,24 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "a51b4833fdaffe730572670ccc27dd89af7e0726ab3de7f428d21702d687cc15"
+    "storageHash": "b0934841b579a37fbb2cb51086a816bb92dd410711bb9227caa9a1cceccbeb4d"
   },
   "execution": {
-    "executionHash": "3730158042e7c88d23f35529e89ad90532db0cd5c528c13e701f93cb45aa8a9c",
+    "executionHash": "93546d9a625782ca5e8c4eaf7b61de46e5a073edab956f33c52b37ee18ca8374",
     "mutations": {
       "defaults": [
         {
           "onCreate": {
-            "id": "timestamptzStringNow",
+            "id": "instantNow",
             "kind": "generator"
           },
           "onUpdate": {
-            "id": "timestamptzStringNow",
+            "id": "instantNow",
             "kind": "generator"
           },
           "ref": {
-            "entry": "Post",
-            "field": "updatedAt",
-            "namespace": "public"
-          }
-        },
-        {
-          "onCreate": {
-            "id": "timestamptzStringNow",
-            "kind": "generator"
-          },
-          "onUpdate": {
-            "id": "timestamptzStringNow",
-            "kind": "generator"
-          },
-          "ref": {
-            "entry": "User",
-            "field": "updatedAt",
+            "entry": "Transaction",
+            "field": "updated_at",
             "namespace": "public"
           }
         }

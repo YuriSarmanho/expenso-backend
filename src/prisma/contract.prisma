@@ -1,3 +1,5 @@
+// use prisma-8
+
 model User {
   id          Int      @id @default(autoincrement())
   email       String   @unique
@@ -19,5 +21,5 @@ model Transaction {
   authorId  Int
 
   createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime? @updatedAt @map("updated_at")
+  updatedAt DateTime? @onCreate(now()) @onUpdate(now()) @map("updated_at")
 }
