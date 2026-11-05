@@ -51,7 +51,14 @@ export class CreateAccountController {
 
   @Get()
   async getUser() {
-    const users = await this.prisma.db.orm.public.User.all();
+    const users = await this.prisma.db.orm.public.User.select(
+      'id',
+      'name',
+      'username',
+      'email',
+      'role',
+      'balance',
+    ).all();
 
     return users;
   }
