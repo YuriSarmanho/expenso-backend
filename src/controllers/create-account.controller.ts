@@ -7,6 +7,7 @@ import {
   Post,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
+import { hash } from 'argon2';
 
 @Controller('/accounts')
 export class CreateAccountController {
@@ -36,7 +37,13 @@ export class CreateAccountController {
       email,
       name,
       username,
-      password,
+      password: await hash(password, {
+        type: 2,
+        memoryCost: 2 ** 16, // 64 MiB
+        timeCost: 3,
+        parallelism: 4,
+        secret: Buffer.from(process.env['DATABASE_URL']!),
+      }),
       role,
       balance,
     });
