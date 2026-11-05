@@ -2,6 +2,7 @@ import {
   Body,
   ConflictException,
   Controller,
+  Delete,
   Get,
   HttpCode,
   Post,
@@ -76,5 +77,15 @@ export class CreateAccountController {
     ).all();
 
     return users;
+  }
+
+  @Delete()
+  async deleteUser(@Body() body: any) {
+    const { id } = body;
+    const deletedUsers = await this.prisma.db.orm.public.User.where({
+      id,
+    }).delete();
+
+    return deletedUsers;
   }
 }
